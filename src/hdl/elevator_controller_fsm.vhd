@@ -82,7 +82,7 @@ end elevator_controller_fsm;
 
 -- Write the code in a similar style as the Lesson 19 ICE (stoplight FSM version 2)
 architecture Behavioral of elevator_controller_fsm is
-
+	
     -- Below you create a new variable type! You also define what values that 
     -- variable type can take on. Now you can assign a signal as 
     -- "sm_floor" the same way you'd assign a signal as std_logic
@@ -96,20 +96,31 @@ begin
 
 	-- CONCURRENT STATEMENTS ------------------------------------------------------------------------------
 	-- Next State Logic
-    f_Q_next <= <state> when (<condition>) else -- going up
-                ...
-                ...
-                ... -- going down
-                ...
-                ... else
-                ...; -- default case
+    f_Q_next <= s_floor2 when (i_up_down = '1' and i_stop='0' and f_Q=s_floor1) else -- going up
+                
+                s_floor3 when (i_up_down = '1' and i_stop='0' and f_Q=s_floor2) else
+                
+                s_floor4 when (i_up_down = '1' and i_stop='0' and f_Q=s_floor3) else
+                
+                --going down
+                s_floor1 when (i_up_down = '0' and i_stop='0' and f_Q=s_floor2) else 
+                
+                s_floor2 when (i_up_down = '0' and i_stop ='0' and f_Q=s_floor3) else
+                
+                s_floor3 when (i_up_down = '0' and i_stop='0' and f_Q=s_floor4) else
+                
+                --default case
+                f_Q when (i_stop = '1') else
+                s_floor2 
+                ; 
   
 	-- Output logic
     with f_Q select
-        o_floor <= <value> when s_floor1,
-                ...
-                ...
-                <value> when others; -- default is floor 2
+        o_floor <= "0001" when s_floor1,
+                   "0010" when s_floor2,
+                   "0011" when s_floor3,
+                   "0100" when s_floor4,
+                   "0010" when others; -- default is floor 2
 	
 	-------------------------------------------------------------------------------------------------------
 	
@@ -118,17 +129,20 @@ begin
 	register_proc : process (i_clk)
     begin
          -- synchronous reset
-        
         -- if elevator is enabled, advance floors
+       if (rising_edge(i_clk)) then
+        if (i_stop='0') then
+            f_Q <= f_Q_next;
         -- if not enabled, stay at current floor
+        elsif (i_stop = '1') then
+            f_Q<=f_Q;
+            
+            end if; 
+            end if;
     
 	end process register_proc;	
 	
 	-------------------------------------------------------------------------------------------------------
-	
-	
-
-
 
 end Behavioral;
 
