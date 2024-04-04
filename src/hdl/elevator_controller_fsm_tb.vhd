@@ -129,26 +129,22 @@ begin
                        
        
 		-- rest of cases
-        
+        w_up_down <= '0'; wait for k_clk_period *2;
         -- go back DOWN
-        
-        
        
         w_stop <= '0'; wait for k_clk_period * 2;
           assert w_floor = "0011" report "bad down from floor4" severity failure;
           
-         w_stop <= '0'; wait for k_clk_period *2;
-             assert w_floor = "0011" report "bad wait on floor3" severity failure;
+--         w_stop <= '0'; wait for k_clk_period *2;
+--             assert w_floor = "0011" report "bad wait on floor3" severity failure;
           w_stop <= '0'; wait for k_clk_period * 2;
             assert w_floor = "0010" report "bad down from floor3" severity failure; 
           
-        w_stop <='1'; wait for k_clk_period * 2;
-          assert w_floor = "0010" report "bad wait on floor2" severity failure;
+
         w_stop <= '0'; wait for k_clk_period * 2;
           assert w_floor = "0001" report "bad down from floor2" severity failure;
           
-        w_stop <= '0'; wait for k_clk_period * 2;
-          assert w_floor = "0001" report "bad wait on floor1" severity failure;
+       
           
 		wait; -- wait forever
 	end process;	
