@@ -101,7 +101,8 @@ begin
                 s_floor3 when (i_up_down = '1' and i_stop='0' and f_Q=s_floor2) else
                 
                 s_floor4 when (i_up_down = '1' and i_stop='0' and f_Q=s_floor3) else
-            
+             --
+              --  s_floor4 when (i_up_down = '1' and i_stop = '0' and f_Q=s_floor4) else
            
                 
                 --going down
@@ -112,8 +113,7 @@ begin
                 s_floor3 when (i_up_down = '0' and i_stop='0' and f_Q=s_floor4) else
                 
                 --default case
-                f_Q when (i_stop = '1') else
-                s_floor2 
+                f_Q
                 ; 
   
 	-- Output logic
@@ -131,15 +131,18 @@ begin
 	register_proc : process (i_clk)
     begin
          -- synchronous reset
+         
         -- if elevator is enabled, advance floors
        if (rising_edge(i_clk)) then
-        if (i_stop='0') then
-            f_Q <= f_Q_next;
-        -- if not enabled, stay at current floor
-        elsif (i_stop = '1') then
-            f_Q<=f_Q;
+        if (i_reset = '1')then
+            f_Q <= s_floor2;
             
-            end if; 
+         -- if not enabled, stay at current floor
+        elsif (i_stop='0') then
+            f_Q <= f_Q_next;
+       
+            
+            end if;
             end if;
     
 	end process register_proc;	
